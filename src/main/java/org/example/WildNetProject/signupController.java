@@ -78,6 +78,12 @@ public class signupController extends java.awt.Component {
                                    pr.setString(3, password1);
                                    pr.executeUpdate();
                                    pr.close();
+                                   PreparedStatement pr1= conn.prepareStatement("insert into userprof values(?,?)");
+                                   pr1.setString(1,name);
+                                   pr1.setString(2,null);
+                                   pr1.executeUpdate();
+                                   pr1.close();
+
                                    JOptionPane.showMessageDialog(this, "Signup Successful", "CONGRATULATIONS!", JOptionPane.PLAIN_MESSAGE);
                                    goToLogin(event);
                                }

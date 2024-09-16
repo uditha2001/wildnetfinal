@@ -17,9 +17,8 @@ import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.io.*;
 
-import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -52,10 +51,29 @@ public class UserSettingsController extends Component {
     Connection conn=Instance.getConnection();
     // Initialize method, called after the FXML fields are populated
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException, IOException {
         databaseConnection Instance=databaseConnection.getInstance();
         Connection conn=Instance.getConnection();
-        setProfilePictureButton.setOnAction(event -> setProfilePicture());
+        PreparedStatement pr1=conn.prepareStatement("select img from userprof where user =? ");
+        pr1.setString(1,nam1);
+        ResultSet rs1=pr1.executeQuery();
+        if(rs1.next()){
+            InputStream inputStream = rs1.getBinaryStream("img");
+            if(inputStream!=null){
+                Image image=new Image(inputStream);
+                profileImageView.setImage(image);
+            }
+
+        }
+        setProfilePictureButton.setOnAction(event -> {
+            try {
+                setProfilePicture();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
         editDetailsButton.setOnAction(event -> saveUserDetails());
         try {
             Statement str=conn.createStatement();
@@ -76,14 +94,23 @@ public class UserSettingsController extends Component {
 
     }
 
-    public void setProfilePicture() {
+    public void setProfilePicture() throws SQLException, FileNotFoundException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Image");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
+        FileInputStream fis = new FileInputStream(selectedFile);
         if (selectedFile != null) {
             profileImageView.setImage(new Image(selectedFile.toURI().toString()));
+            String sqlQuery="update userprof set img=? where user=?";
+            PreparedStatement preparedStatement= conn.prepareStatement(sqlQuery);
+            preparedStatement.setBinaryStream(1, fis, (int) selectedFile.length());
+            preparedStatement.setString(2,nam1);
+            int result=preparedStatement.executeUpdate();
+            preparedStatement.close();
+            System.out.println("successfull "+result+" "+"raws affected");
+
         }
     }
 

@@ -9,11 +9,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class dashboardController  implements Initializable {
@@ -24,7 +30,8 @@ public class dashboardController  implements Initializable {
     private Parent newRoot;
     @FXML
     private Label username;
-
+    @FXML
+    private ImageView img;
     public static String name;
     // Navigate to Learning Center
     public void goToLearningCenter(ActionEvent event) throws IOException {
@@ -61,6 +68,23 @@ public class dashboardController  implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         databaseConnection Instance=databaseConnection.getInstance();
         Connection conn=Instance.getConnection();
+        PreparedStatement pr1= null;
+        try {
+            pr1 = conn.prepareStatement("select img from userprof where user =? ");
+            pr1.setString(1,name);
+            ResultSet rs1=pr1.executeQuery();
+            if(rs1.next()){
+                InputStream inputStream = rs1.getBinaryStream("img");
+                if(inputStream!=null){
+                    Image image=new Image(inputStream);
+                    img.setImage(image);
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         community.setDisable(true);
         user(name);
 

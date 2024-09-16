@@ -1,5 +1,6 @@
 package org.example.WildNetProject;
 
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -71,9 +72,9 @@ public class learningResultController implements Initializable {
                     System.out.println(event.getData());
                 });
 
-                webview.getEngine().getLoadWorker().exceptionProperty().addListener((o, old, newval) -> {
-                    if (newval != null) {
-                        System.out.println("Exception Occurred: " + newval.getMessage());
+                engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+                    if (newState == Worker.State.SUCCEEDED) {
+                        System.out.println("Page loaded successfully!");
                     }
                 });
 

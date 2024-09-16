@@ -1,5 +1,6 @@
 package org.example.WildNetProject;
 
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -45,6 +46,11 @@ public class gameViewController implements Initializable {
         URL url = this.getClass().getResource("GameZone/" + buttonID.toLowerCase() + ".html");
 
         if (url != null) {
+            engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+                if (newState == Worker.State.SUCCEEDED) {
+                    System.out.println("Page loaded successfully!");
+                }
+            });
             engine.load(url.toString());
 
             System.out.println("Game Play");

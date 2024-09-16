@@ -32,7 +32,7 @@
       </AnchorPane>
       <Pane layoutX="35.0" layoutY="40.0" prefHeight="82.0" prefWidth="736.0" styleClass="login-pane" stylesheets="@cssFiles/login.css">
          <children>
-            <Text fill="#bb2c2c" layoutX="250.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-text" text="ACCOUNT LOGIN" wrappingWidth="235.0">
+            <Text fill="#bb2c2c" layoutX="250.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header-text" text="ACCOUNT LOGIN" wrappingWidth="235.0">
                <font>
                   <Font size="30.0" />
                </font>
